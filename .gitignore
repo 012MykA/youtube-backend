@@ -1,0 +1,9 @@
+.venv/
+venv/
+
+certs/
+.idea/
+
+.env
+
+__pycache__/
