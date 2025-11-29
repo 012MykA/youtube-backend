@@ -16,7 +16,9 @@ router = APIRouter(tags=["Admin"])
 
 
 @router.post("/users", response_model=UserIDB)
-async def create_user(user_in: UserCreate, user_service: UserService = Depends(get_user_service)):
+async def create_user(
+    user_in: UserCreate, user_service: UserService = Depends(get_user_service)
+):
     return await user_service.create(user_in)
 
 
@@ -24,12 +26,13 @@ async def create_user(user_in: UserCreate, user_service: UserService = Depends(g
 async def get_all_users(user_service: UserService = Depends(get_user_service)):
     return await user_service.get_all()
 
+
 # TODO: remove
 @router.post("/reset-db")
 async def reset_db():
     await drop_db()
 
-    files = glob.glob('E:/videos-db/*')
+    files = glob.glob("E:/videos-db/*")
     for f in files:
         os.remove(f)
 

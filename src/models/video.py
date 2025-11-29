@@ -23,12 +23,14 @@ class Video(Base):
 
     # Dates
     created_at: Mapped[datetime] = mapped_column(default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        server_default=func.now(), onupdate=func.now()
+    )
 
     # System
     file_path: Mapped[str] = mapped_column(unique=True)
     file_size: Mapped[int]
 
     # Relations
-    user_id: Mapped[UUID] = mapped_column(ForeignKey('users.id'), index=True)
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), index=True)
     user: Mapped["User"] = relationship(back_populates="videos")

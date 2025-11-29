@@ -20,7 +20,9 @@ class VideoService:
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def create_video(self, video_in: VideoCreate, video_file: UploadFile, user_id: int) -> Video:
+    async def create_video(
+        self, video_in: VideoCreate, video_file: UploadFile, user_id: int
+    ) -> Video:
         # Video
         video_uuid = uuid4()
         file_path = f"{VIDEOS_DB_PATH}/{video_uuid}-{video_file.filename}"
@@ -35,7 +37,7 @@ class VideoService:
             description=video_in.description,
             file_size=video_file.size,
             file_path=file_path,
-            user_id=user_id
+            user_id=user_id,
         )
 
         self.session.add(video)
@@ -44,5 +46,7 @@ class VideoService:
         return video
 
 
-def get_video_service(session: AsyncSession = Depends(get_async_session)) -> VideoService:
+def get_video_service(
+    session: AsyncSession = Depends(get_async_session),
+) -> VideoService:
     return VideoService(session)

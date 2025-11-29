@@ -1,10 +1,7 @@
 from typing import Annotated
 
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi import (
-    APIRouter, Depends,
-    HTTPException, Response
-)
+from fastapi import APIRouter, Depends, HTTPException, Response
 
 from src.core.config import load_auth_jwt
 from src.schemas.token import Token
@@ -16,16 +13,18 @@ router = APIRouter(tags=["auth"])
 
 
 @router.post("/register", response_model=UserIDB)
-async def registration(user_in: UserCreate, user_service: UserService = Depends(get_user_service)):
+async def registration(
+    user_in: UserCreate, user_service: UserService = Depends(get_user_service)
+):
     user = await user_service.create(user_in)
     return user
 
 
 @router.post("/login")
 async def login(
-        response: Response,
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-        user_service: UserService = Depends(get_user_service)
+    response: Response,
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    user_service: UserService = Depends(get_user_service),
 ) -> Token:
     user = await auth_user(form_data.username, form_data.password, user_service)
     if not user:
@@ -37,7 +36,7 @@ async def login(
         value=f"Bearer {access_token}",
         httponly=True,
         max_age=load_auth_jwt().ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-        secure=True
+        secure=True,
     )
 
     return Token(access_token=access_token, token_type="bearer")

@@ -8,7 +8,9 @@ from src.models.user import User
 from src.services.user_service import UserService, get_user_service
 
 
-async def get_current_user(request: Request, user_service: UserService = Depends(get_user_service)) -> User:
+async def get_current_user(
+    request: Request, user_service: UserService = Depends(get_user_service)
+) -> User:
     credentials_exception = HTTPException(
         status_code=401,
         detail="Could not validate credentials",

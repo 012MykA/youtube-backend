@@ -1,8 +1,10 @@
 from typing import Iterator
 
 
-def get_file_iterator(file_path: str, start: int, end: int, chunk_size: int = 1024 * 1024) -> Iterator[bytes]:
-    with open(file_path, 'rb') as file:
+def get_file_iterator(
+    file_path: str, start: int, end: int, chunk_size: int = 1024 * 1024
+) -> Iterator[bytes]:
+    with open(file_path, "rb") as file:
         file.read(start)
         remaining_bytes = end - start + 1
 

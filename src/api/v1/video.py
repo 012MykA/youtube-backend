@@ -1,10 +1,7 @@
 from uuid import UUID
 import re
 
-from fastapi import (
-    APIRouter, Request, HTTPException, Depends,
-    UploadFile, File
-)
+from fastapi import APIRouter, Request, HTTPException, Depends, UploadFile, File
 from fastapi.responses import StreamingResponse
 
 from src.services.auth_deps import get_current_user
@@ -18,9 +15,10 @@ router = APIRouter(tags=["Video"])
 
 @router.post("/upload", response_model=VideoIDB)
 async def upload_video(
-        video_in: VideoCreate = Depends(), video_file: UploadFile = File(...),
-        user: User = Depends(get_current_user),
-        video_service: VideoService = Depends(get_video_service),
+    video_in: VideoCreate = Depends(),
+    video_file: UploadFile = File(...),
+    user: User = Depends(get_current_user),
+    video_service: VideoService = Depends(get_video_service),
 ):
     if not video_file.filename.endswith(".mp4"):
         raise HTTPException(status_code=400, detail="Invalid video type")
@@ -28,8 +26,13 @@ async def upload_video(
     video = await video_service.create_video(video_in, video_file, user.id)
     return video
 
+
 @router.get("/videos/{video_uuid}")
-async def watch(video_uuid: UUID, request: Request, video_service: VideoService = Depends(get_video_service)):
+async def watch(
+    video_uuid: UUID,
+    request: Request,
+    video_service: VideoService = Depends(get_video_service),
+):
     video = await video_service.get_video(video_uuid)
 
     if video is None:
@@ -55,7 +58,7 @@ async def watch(video_uuid: UUID, request: Request, video_service: VideoService 
             return StreamingResponse(
                 content=[],
                 status_code=416,
-                headers={"Content-Range": f"bytes {start}-{end}/{video.file_size}"}
+                headers={"Content-Range": f"bytes {start}-{end}/{video.file_size}"},
             )
 
         content_length = end - start + 1
@@ -69,9 +72,7 @@ async def watch(video_uuid: UUID, request: Request, video_service: VideoService 
 
         video_iterator = get_file_iterator(video.file_path, start, end)
         return StreamingResponse(
-            content=video_iterator,
-            status_code=206,
-            headers=headers
+            content=video_iterator, status_code=206, headers=headers
         )
 
     else:

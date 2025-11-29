@@ -5,12 +5,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PATH_TO_SRC = Path(__file__).parent.parent.parent
 
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=f"{PATH_TO_SRC}/.env",
         env_file_encoding="utf-8",
         case_sensitive=False,
-        extra='ignore'
+        extra="ignore",
     )
 
     DB_USER: str
@@ -30,12 +31,13 @@ class Settings(BaseSettings):
             self.DB_NAME,
         )
 
+
 class AuthJWT(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=f"{PATH_TO_SRC}/.env",
         env_file_encoding="utf-8",
         case_sensitive=False,
-        extra='ignore'
+        extra="ignore",
     )
     ACCESS_TOKEN_EXPIRE_MINUTES: int
 
@@ -43,9 +45,11 @@ class AuthJWT(BaseSettings):
     public_key_path: Path = PATH_TO_SRC / "certs" / "jwt-public.pem"
     ALGORITHM: str = "RS256"
 
+
 @lru_cache
 def load_settings() -> Settings:
     return Settings()
+
 
 @lru_cache
 def load_auth_jwt() -> AuthJWT:
