@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.api.v1 import root_router
 from src.db.session import init_db
 
-app = FastAPI(lifespan=init_db)
+app = FastAPI(lifespan=init_db, title="YouTube API")
 
 app.include_router(root_router)
 app.add_middleware(
@@ -17,5 +17,5 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-if __name__ == '__main__':
-    uvicorn.run("main:app", reload=True, host="127.0.0.1", port=8000)
+# if __name__ == '__main__':
+#     uvicorn.run("main:app", reload=True, host="127.0.0.1", port=8000)

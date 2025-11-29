@@ -1,5 +1,3 @@
-from typing import Annotated, Required
-
 import jwt
 from jwt.exceptions import InvalidTokenError
 from fastapi import Depends, HTTPException, Request
@@ -18,10 +16,7 @@ async def get_current_user(request: Request, user_service: UserService = Depends
 
     token = request.cookies.get("access_token")
     if not token:
-        raise HTTPException(
-            status_code=401,
-            detail="Could not validate credentials 1",
-        )
+        raise credentials_exception
 
     if token.startswith("Bearer "):
         token = token[7:]
@@ -34,22 +29,13 @@ async def get_current_user(request: Request, user_service: UserService = Depends
         )
         email = payload.get("sub")
         if email is None:
-            raise HTTPException(
-                status_code=401,
-                detail="Could not validate credentials 2",
-            )
+            raise credentials_exception
 
     except InvalidTokenError:
-        raise HTTPException(
-            status_code=401,
-            detail="Could not validate credentials 3",
-        )
+        raise credentials_exception
 
     user = await user_service.get_by_email(email)
     if user is None:
-        raise HTTPException(
-            status_code=401,
-            detail="Could not validate credentials 4",
-        )
+        raise credentials_exception
 
     return user

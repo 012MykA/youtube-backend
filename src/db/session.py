@@ -19,6 +19,11 @@ async def get_async_session() -> AsyncIterator[AsyncSession]:
 @asynccontextmanager
 async def init_db(app: FastAPI):
     async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     yield
+
+# TODO: remove
+async def drop_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
