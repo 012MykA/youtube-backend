@@ -16,7 +16,7 @@ from src.models.user import User
 router = APIRouter(tags=["Video"])
 
 
-@router.post("/upload-video", response_model=VideoIDB)
+@router.post("/upload", response_model=VideoIDB)
 async def upload_video(
         video_in: VideoCreate = Depends(), video_file: UploadFile = File(...),
         user: User = Depends(get_current_user),
@@ -28,10 +28,9 @@ async def upload_video(
     video = await video_service.create_video(video_in, video_file, user.id)
     return video
 
-
-@router.get("/watch")
-async def watch(v: UUID, request: Request, video_service: VideoService = Depends(get_video_service)):
-    video = await video_service.get_video(v)
+@router.get("/videos/{video_uuid}")
+async def watch(video_uuid: UUID, request: Request, video_service: VideoService = Depends(get_video_service)):
+    video = await video_service.get_video(video_uuid)
 
     if video is None:
         raise HTTPException(status_code=404, detail="Video not found")
